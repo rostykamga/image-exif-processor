@@ -28,8 +28,6 @@ public class ExifProcessor {
             if (thubnail == null)
                 return null;
 
-            System.out.println(thubnail.getDescription(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET));
-            System.out.println(thubnail.getDescription(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH));
             byte[] data = (byte[]) thubnail.getObject(ImageUtils.TAG_THUMBNAIL_DATA);
 
             return ImageUtils.byteArrayToImage(data);

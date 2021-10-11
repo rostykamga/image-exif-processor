@@ -2,11 +2,16 @@ package org.rostykamga.imageexifprocessor;
 
 import com.drew.metadata.MetadataException;
 
+import javax.swing.*;
+
 public class MainClass {
 
     public static void main(String[] args) throws MetadataException {
-        ExifProcessor processor = new ExifProcessor();
 
-        System.out.println(processor.extractThumbnail("Test pictures/Canon_40D_photoshop_import.jpg"));
+        SwingUtilities.invokeLater(() -> {
+            MainUI ui = new MainUI();
+            ui.setTitle("Image-exif-extractor");
+            ui.setVisible(true);
+        });
     }
 }
