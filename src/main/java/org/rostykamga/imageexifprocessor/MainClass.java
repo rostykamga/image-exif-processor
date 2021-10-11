@@ -7,6 +7,6 @@ public class MainClass {
     public static void main(String[] args) throws MetadataException {
         ExifProcessor processor = new ExifProcessor();
 
-        System.out.println(processor.extractExif("Apple iPhone 4.jpg"));
+        System.out.println(processor.extractThumbnail("Test pictures/Canon_40D_photoshop_import.jpg"));
     }
 }

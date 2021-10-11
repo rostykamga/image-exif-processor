@@ -1,32 +1,55 @@
 package org.rostykamga.imageexifprocessor;
 
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
+import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
-import com.drew.metadata.Tag;
-import com.drew.metadata.exif.*;
+import com.drew.metadata.exif.ExifDirectoryBase;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
-import com.drew.metadata.iptc.IptcDirectory;
 import org.rostykamga.imageexifprocessor.model.ExifData;
+import org.rostykamga.imageexifprocessor.utils.ImageUtils;
 import org.rostykamga.imageexifprocessor.utils.Parser;
 import org.rostykamga.imageexifprocessor.utils.StringUtils;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
+import java.util.Collections;
 
 public class ExifProcessor {
 
+    BufferedImage extractThumbnail(Metadata metadata)  {
 
-    public void extractThumbnail(String imageFile){
+        try {
+            ExifThumbnailDirectory thubnail = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
 
-//        File jpegFile = new File(imageFile);
-//        Metadata metadata = ImageMetadataReader.readMetadata(jpegFile);
-//        Directory thubnail = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
+            if (thubnail == null)
+                return null;
+
+            System.out.println(thubnail.getDescription(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET));
+            System.out.println(thubnail.getDescription(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH));
+            byte[] data = (byte[]) thubnail.getObject(ImageUtils.TAG_THUMBNAIL_DATA);
+
+            return ImageUtils.byteArrayToImage(data);
+        }
+        catch (Exception ex){
+            return null;
+        }
     }
 
-    public ExifData extractExif(Metadata metadata) {
+    public BufferedImage extractThumbnail( String file){
+
+        try {
+            return extractThumbnail(JpegMetadataReader.readMetadata(new File(file), Collections.singletonList(ImageUtils.CUSTOM_READER)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    ExifData extractExif(Metadata metadata) {
 
         Directory fileDir = metadata.getFirstDirectoryOfType(FileSystemDirectory.class);
         Directory imgSubIfDir = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
